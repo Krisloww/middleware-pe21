@@ -31,3 +31,19 @@ A continuación se documentan los resultados obtenidos al probar los endpoints d
 </html>
 
 * **Explicación:** Al intentar acceder a una ruta no definida en el servidor, este responde con un código **404**.
+
+## Testing
+
+Las pruebas unitarias se ejecutan con:
+`npm test`:
+
+```
+PASS src/middlewares/auth.test.ts
+PASS src/middlewares/logger.test.ts
+
+Test Suites: 2 passed, 2 total
+Tests:       5 passed, 5 total
+Snapshots:   0 total
+Time:        0.571 s
+Ran all test suites.
+```
