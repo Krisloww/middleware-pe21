@@ -1,0 +1,107 @@
+openapi: "3.1.0"
+info:
+  title: UIDE Inscripciones API
+  version: "2.0.0"
+  license:
+    name: MIT
+    identifier: MIT
+
+servers:
+  - url: http://localhost:3000
+    description: Desarrollo local
+
+paths:
+  /health:
+    get:
+      operationId: healthCheck
+      summary: Estado del servidor
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Servidor activo.
+        '401':
+          description: API key ausente o invalida.
+
+  /v1/inscripciones:
+    post:
+      operationId: crearInscripcionV1
+      summary: Crear inscripción (contrato v1)
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InscripcionV1'
+            example:
+              estudianteId: "uuid-123"
+              materias: ["LTI_05A_458"]
+              periodoId: "2026-1"
+      responses:
+        '201':
+          description: Inscripción creada.
+        '400':
+          description: Payload inválido.
+        '401':
+          description: API key ausente o invalida.
+
+  /v2/inscripciones:
+    post:
+      operationId: crearInscripcionV2
+      summary: Crear inscripción con método de pago (contrato v2)
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InscripcionV2'
+            example:
+              estudianteId: "uuid-123"
+              materias: ["LTI_05A_458"]
+              periodoId: "2026-1"
+              payment_method: "scholarship"
+      responses:
+        '201':
+          description: Inscripción creada.
+        '400':
+          description: Payload inválido o payment_method fuera de enum.
+        '401':
+          description: API key ausente o invalida.
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+
+  schemas:
+    InscripcionV1:
+      type: object
+      required: [estudianteId, materias, periodoId]
+      properties:
+        estudianteId:
+          type: string
+          format: uuid
+        materias:
+          type: array
+          items:
+            type: string
+          minItems: 1
+        periodoId:
+          type: string
+
+    InscripcionV2:
+      allOf:
+        - $ref: '#/components/schemas/InscripcionV1'
+        - type: object
+          required: [payment_method]
+          properties:
+            payment_method:
+              type: string
+              enum: [debit, credit, scholarship]
+      unevaluatedProperties: false
