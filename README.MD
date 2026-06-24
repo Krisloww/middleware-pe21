@@ -71,3 +71,7 @@ Servidor corriendo en `http://localhost:3000`. Autenticacion: header `x-api-key:
 Resultado de `npx @redocly/cli lint openapi.yaml`:
 
 ![Redocly lint sin errores](docs/screenshots/lint-sin-errores.png)
+
+**Reflexión:**
+Creo que lo primero que se tendria que realizar seria una estandarizacion para los codigos de error con algun formato uniforme, tambien la parte de autenticacion por API key en lugar que sea una clave única compartida, tambien documentar todo lo que se va realizando dentro del 
+código, y algunos filtros para futuros endpoints 
