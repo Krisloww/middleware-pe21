@@ -20,8 +20,17 @@ paths:
       responses:
         '200':
           description: Servidor activo.
+          content:
+            application/json:
+              example:
+                status: ok
+                ts: "2026-06-23T10:00:00.000Z"
         '401':
           description: API key ausente o invalida.
+          content:
+            application/json:
+              example:
+                error: "API key invalida o ausente"
 
   /v1/inscripciones:
     post:
@@ -36,14 +45,25 @@ paths:
             schema:
               $ref: '#/components/schemas/InscripcionV1'
             example:
-              estudianteId: "uuid-123"
+              estudianteId: "550e8400-e29b-41d4-a716-446655440000"
               materias: ["LTI_05A_458"]
               periodoId: "2026-1"
       responses:
         '201':
           description: Inscripción creada.
+          content:
+            application/json:
+              example:
+                version: v1
+                estudianteId: "550e8400-e29b-41d4-a716-446655440000"
+                materias: ["LTI_05A_458"]
+                periodoId: "2026-1"
         '400':
-          description: Payload inválido.
+          description: Payload invalido.
+          content:
+            application/json:
+              example:
+                error: "Campos requeridos: estudianteId, materias, periodoId"
         '401':
           description: API key ausente o invalida.
 
@@ -60,15 +80,32 @@ paths:
             schema:
               $ref: '#/components/schemas/InscripcionV2'
             example:
-              estudianteId: "uuid-123"
+              estudianteId: "550e8400-e29b-41d4-a716-446655440001"
               materias: ["LTI_05A_458"]
               periodoId: "2026-1"
               payment_method: "scholarship"
       responses:
         '201':
           description: Inscripción creada.
+          content:
+            application/json:
+              example:
+                version: v2
+                estudianteId: "550e8400-e29b-41d4-a716-446655440001"
+                materias: ["LTI_05A_458"]
+                periodoId: "2026-1"
+                payment_method: scholarship
         '400':
-          description: Payload inválido o payment_method fuera de enum.
+          description: Payload invalido o payment_method fuera de enum.
+          content:
+            application/json:
+              examples:
+                campos_faltantes:
+                  value:
+                    error: "Campos requeridos: estudianteId, materias, periodoId, payment_method"
+                metodo_invalido:
+                  value:
+                    error: "payment_method invalido. Valores: debit, credit, scholarship"
         '401':
           description: API key ausente o invalida.
 
