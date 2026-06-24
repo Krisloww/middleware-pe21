@@ -67,3 +67,7 @@ Servidor corriendo en `http://localhost:3000`. Autenticacion: header `x-api-key:
 ### Escenario 4 — POST /v2/inscripciones con payment_method inválido (esperado: 400)
 
 ![v2 400 valor inválido](docs/screenshots/04-v2-400-inválido.png)
+
+Resultado de `npx @redocly/cli lint openapi.yaml`:
+
+![Redocly lint sin errores](docs/screenshots/lint-sin-errores.png)
