@@ -1,6 +1,7 @@
 import express, { type Request, type Response, type NextFunction } from 'express';
 import { requestLogger } from './middlewares/logger.js';
-import { requireApiKey } from './middlewares/auth.js';
+import { requireJWT } from './middlewares/auth.js';
+import { rateLimiter } from './middlewares/rateLimiter.js';
 
 import v1Inscripciones from './routes/v1/inscripciones.js';
 import v2Inscripciones from './routes/v2/inscripciones.js';
@@ -18,8 +19,11 @@ app.get('/health', (_req: Request, res: Response) => {
     });
 });
 
-// Middleware de autenticación para el resto de rutas
-app.use(requireApiKey);
+// Middleware de autenticación JWT
+app.use(requireJWT);
+
+// Rate limiting
+app.use(rateLimiter);
 
 // Rutas versionadas
 app.use('/v1/inscripciones', v1Inscripciones);

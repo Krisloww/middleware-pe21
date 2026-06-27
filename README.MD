@@ -72,6 +72,58 @@ Resultado de `npx @redocly/cli lint openapi.yaml`:
 
 ![Redocly lint sin errores](docs/screenshots/lint-sin-errores.png)
 
+## Seguridad JWT (PE-2.3)
+
+### Generar un token de prueba
+
+```bash
+# Con el secreto por defecto del laboratorio:
+TOKEN=$(node generate-token.mjs)
+
+# Con secreto personalizado:
+JWT_SECRET=mi-secreto-largo node generate-token.mjs
+```
+
+### Probar el servicio
+
+```bash
+# Peticion valida (esperado: 201)
+curl -X POST http://localhost:3000/v2/inscripciones \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"estudianteId":"uuid-123","materias":["LTI_05A_458"],"periodoId":"2026-1","payment_method":"scholarship"}'
+
+# Firma invalida (esperado: 401)
+curl -X POST http://localhost:3000/v2/inscripciones \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ4In0.FIRMA_INVALIDA" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+
+# alg:none (esperado: 401)
+curl -X POST http://localhost:3000/v2/inscripciones \
+  -H "Authorization: Bearer eyJhbGciOiJub25lIn0.eyJzdWIiOiJ4In0." \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+### Resultados de las pruebas
+
+#### Prueba 1 — Token válido (esperado: 201)
+
+![PE-2.3 Prueba 1 - 201 Created](docs/screenshots/PE23_prueba1_201.png)
+
+#### Prueba 2 — Firma inválida (esperado: 401)
+
+![PE-2.3 Prueba 2 - 401](docs/screenshots/PE23_prueba2_401.png)
+
+#### Prueba 3 — alg:none (esperado: 401)
+
+![PE-2.3 Prueba 3 - 401](docs/screenshots/PE23_prueba3_401.png)
+
+### Variables de entorno
+
+Copia `.env.example` a `.env` y configura `JWT_SECRET` con un valor secreto largo.
+
 **Reflexión:**
 Creo que lo primero que se tendria que realizar seria una estandarizacion para los codigos de error con algun formato uniforme, tambien la parte de autenticacion por API key en lugar que sea una clave única compartida, tambien documentar todo lo que se va realizando dentro del 
 código, y algunos filtros para futuros endpoints 
